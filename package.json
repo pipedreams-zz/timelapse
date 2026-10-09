@@ -5,6 +5,7 @@
   "description": "Zeitraffer aus Screencasts per Drag & Drop – steuert ffmpeg",
   "main": "main.js",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "start": "electron .",
     "setup": "npm install && node node_modules/electron/install.js"

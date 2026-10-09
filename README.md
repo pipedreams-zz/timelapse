@@ -56,3 +56,7 @@ Darstellung oben rechts umschaltbar: **Auto** (folgt Windows), **Hell**, **Dunke
 - `index.html`, `styles.css`, `renderer.js`: Oberfläche
 
 Hinweis: `node_modules` ist rund 250 MB groß. Liegt der App-Ordner in einem synchronisierten Cloud-Ordner, wird das mitsynchronisiert – dann den Ordner besser an einen lokalen Ort verschieben und `Verknuepfungen anlegen.ps1` erneut ausführen.
+
+## Lizenz
+
+Code unter der [MIT-Lizenz](LICENSE). Die Schrift Space Grotesk unter `assets/fonts/` steht unter der SIL Open Font License ([OFL.txt](assets/fonts/OFL.txt)).
