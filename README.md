@@ -6,6 +6,11 @@ Kleine Desktop-App für Windows, die aus Screencasts per Drag & Drop Zeitraffer 
 D:\OBS\aufnahme.mkv  →  D:\OBS\aufnahme_4x.mp4
 ```
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshot-dunkel.png">
+  <img src="docs/screenshot-hell.png" alt="Zeitraffer: Warteschlange mit drei Videos – eines fertig, eines bei 64 %, eines wartend – und rechts die Einstellungen für Geschwindigkeit, Dateiname und Speicherort">
+</picture>
+
 ## Download
 
 Unter **[Releases](https://github.com/pipedreams-zz/timelapse/releases/latest)** gibt es zwei Varianten, beide mit ffmpeg an Bord – es muss nichts weiter installiert werden:
@@ -57,6 +62,10 @@ ffmpeg -i input.mp4 -map 0:v:0 -vf "setpts=PTS/4" -fps_mode cfr -r 60/1 ^
 
 Ruhig und monochrom: Papier und Tinte, Haarlinien, keine Radien und Schatten. Ein dunkles Grün für Primäraktion und Fortschritt, ein Holzton für Hinweise. Überschriften in Space Grotesk, Text und Bedienung in Supreme.
 Darstellung oben rechts umschaltbar: **Auto** (folgt Windows), **Hell**, **Dunkel**.
+
+| Hell | Dunkel |
+|---|---|
+| ![Zeitraffer in heller Darstellung](docs/screenshot-hell.png) | ![Zeitraffer in dunkler Darstellung](docs/screenshot-dunkel.png) |
 
 ### Schriften
 
