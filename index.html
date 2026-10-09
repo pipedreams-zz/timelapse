@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'">
+  <title>Zeitraffer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="app-name">Zeitraffer</span>
+    </div>
+    <div class="top-right">
+      <div id="toolStatus" class="status-line"><span class="dot"></span><span class="text">ffmpeg wird geprüft …</span></div>
+      <div class="theme-switch" role="group" aria-label="Darstellung">
+        <button type="button" data-theme-choice="system" title="Wie Windows">Auto</button>
+        <button type="button" data-theme-choice="light">Hell</button>
+        <button type="button" data-theme-choice="dark">Dunkel</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <div class="intro">
+        <h1>Screencasts im Zeitraffer</h1>
+        <p>Videos ablegen, Faktor wählen – umgerechnet wird lokal mit ffmpeg. <strong>Das Original bleibt unangetastet.</strong></p>
+      </div>
+
+      <section id="drop" class="drop" tabindex="0">
+        <span class="drop-title">Videos hier ablegen</span>
+        <span class="drop-sub">oder <button id="pickFiles" class="text-link" type="button">Dateien auswählen</button></span>
+        <span class="drop-meta">MP4 · MKV · MOV · FLV · TS · WEBM</span>
+      </section>
+
+      <div id="listHead" class="list-head" hidden>
+        <span id="summary" class="eyebrow"></span>
+        <div class="list-actions">
+          <button id="startAll" class="btn primary" type="button" hidden>Alle starten</button>
+          <button id="clearDone" class="action" type="button">Fertige entfernen</button>
+        </div>
+      </div>
+      <ul id="queue" class="queue"></ul>
+    </main>
+
+    <aside class="settings">
+      <section>
+        <h2 class="eyebrow">Geschwindigkeit</h2>
+        <div class="segmented" data-setting="mode">
+          <button type="button" data-value="factor">Faktor</button>
+          <button type="button" data-value="target">Zieldauer</button>
+        </div>
+        <div id="factorBox" class="sub">
+          <div class="chips" id="speedChips">
+            <button type="button" data-speed="2">2×</button>
+            <button type="button" data-speed="4">4×</button>
+            <button type="button" data-speed="8">8×</button>
+            <button type="button" data-speed="16">16×</button>
+            <button type="button" data-speed="32">32×</button>
+            <button type="button" data-speed="64">64×</button>
+          </div>
+          <label class="field-row">
+            <span>Eigener Faktor</span>
+            <span class="suffix"><input id="speedInput" class="field" type="text" inputmode="decimal" autocomplete="off"><em>×</em></span>
+          </label>
+        </div>
+        <div id="targetBox" class="sub" hidden>
+          <label class="field-row">
+            <span>Ergebnis dauert <button type="button" class="help" data-help="helpTarget" aria-expanded="false">?</button></span>
+            <input id="targetInput" class="field" type="text" placeholder="1:00" autocomplete="off">
+          </label>
+          <p id="helpTarget" class="help-text" hidden>Format m:ss oder Sekunden. Der Faktor wird für jedes Video aus seiner Länge berechnet – ein 20-Minuten-Screencast mit Zieldauer 1:00 läuft also 20-fach.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="eyebrow">Dateiname <button type="button" class="help" data-help="helpName" aria-expanded="false">?</button></h2>
+        <p id="helpName" class="help-text" hidden>{name} ist der Name des Originals, {speed} der Faktor, {date} das heutige Datum. Bestehende Dateien bleiben erhalten; der neue Name bekommt dann „(2)“.</p>
+        <input id="templateInput" class="field" type="text" spellcheck="false" autocomplete="off">
+        <div class="tokens">
+          <button type="button" data-token="{name}">{name}</button>
+          <button type="button" data-token="{speed}">{speed}</button>
+          <button type="button" data-token="{date}">{date}</button>
+        </div>
+        <p class="meta"><span id="previewLabel">Vorschau</span> <span id="namePreview" class="mono"></span></p>
+        <label class="check"><input id="overwrite" type="checkbox"> Vorhandene Dateien überschreiben</label>
+      </section>
+
+      <section>
+        <h2 class="eyebrow">Speicherort</h2>
+        <div class="segmented" data-setting="outMode">
+          <button type="button" data-value="beside">Neben Original</button>
+          <button type="button" data-value="folder">Fester Ordner</button>
+        </div>
+        <div id="folderBox" class="sub" hidden>
+          <button id="pickFolder" class="btn" type="button">Ordner wählen</button>
+          <p id="folderPath" class="meta path"></p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="eyebrow">Ausgabe</h2>
+        <label class="field-row">
+          <span>Bildrate</span>
+          <select id="fpsSelect" class="field">
+            <option value="source">wie Original</option>
+            <option value="30">30 fps</option>
+            <option value="60">60 fps</option>
+          </select>
+        </label>
+        <label class="field-row">
+          <span>Qualität</span>
+          <select id="qualitySelect" class="field">
+            <option value="balanced">Ausgewogen</option>
+            <option value="high">Hoch</option>
+            <option value="small">Kleine Datei</option>
+          </select>
+        </label>
+        <label class="field-row">
+          <span>Encoder <button type="button" class="help" data-help="helpEncoder" aria-expanded="false">?</button></span>
+          <select id="encoderSelect" class="field">
+            <option value="auto">Automatisch</option>
+            <option value="cpu">CPU (x264)</option>
+          </select>
+        </label>
+        <p id="helpEncoder" class="help-text" hidden>Automatisch nutzt die NVIDIA-Grafikkarte (NVENC), sofern vorhanden – deutlich schneller, im Ergebnis kaum zu unterscheiden. CPU ist die langsamere, überall verfügbare Alternative.</p>
+        <label class="field-row">
+          <span>Ton <button type="button" class="help" data-help="helpAudio" aria-expanded="false">?</button></span>
+          <select id="audioSelect" class="field">
+            <option value="drop">entfernen</option>
+            <option value="keep">beschleunigt behalten</option>
+          </select>
+        </label>
+        <p id="helpAudio" class="help-text" hidden>Beschleunigter Ton behält seine Tonhöhe. Ab etwa 4× ist Sprache kaum noch verständlich – für Screencasts meist besser entfernen.</p>
+        <label class="check"><input id="autoStart" type="checkbox"> Nach dem Ablegen sofort starten</label>
+      </section>
+
+      <details id="advanced">
+        <summary class="eyebrow">Erweitert</summary>
+        <label class="stack">
+          <span>ffmpeg-Ordner, leer = aus PATH</span>
+          <input id="toolDirInput" class="field" type="text" spellcheck="false" placeholder="z. B. C:\ffmpeg\bin">
+        </label>
+      </details>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
