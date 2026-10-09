@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect x="16" y="16" width="480" height="480" fill="#141414"/>
+  <!-- Vorspulen: zwei Dreiecke -->
+  <path d="M120 152 L250 236 L120 320 Z" fill="#f4f3f0"/>
+  <path d="M250 152 L380 236 L250 320 Z" fill="#f4f3f0"/>
+  <!-- Fortschrittslinie -->
+  <rect x="120" y="372" width="260" height="10" fill="#43433f"/>
+  <rect x="120" y="372" width="172" height="10" fill="#9cbfa2"/>
+</svg>

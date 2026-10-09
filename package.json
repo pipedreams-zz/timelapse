@@ -6,11 +6,69 @@
   "main": "main.js",
   "private": true,
   "license": "MIT",
+  "author": "pipedreams-zz",
+  "repository": "github:pipedreams-zz/timelapse",
   "scripts": {
     "start": "electron .",
-    "setup": "npm install && node node_modules/electron/install.js"
+    "setup": "npm install && node node_modules/electron/install.js",
+    "ffmpeg": "pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/fetch-ffmpeg.ps1",
+    "dist": "electron-builder --win --publish never",
+    "release": "electron-builder --win --publish always"
+  },
+  "build": {
+    "appId": "io.github.pipedreams-zz.zeitraffer",
+    "productName": "Zeitraffer",
+    "copyright": "MIT License · pipedreams-zz",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "index.html",
+      "styles.css",
+      "assets/**/*",
+      "!assets/fonts/Supreme-*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "vendor/ffmpeg",
+        "to": "ffmpeg"
+      }
+    ],
+    "asar": true,
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Zeitraffer",
+      "include": "build/installer.nsh",
+      "artifactName": "Zeitraffer-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "Zeitraffer-${version}-portable.${ext}"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "pipedreams-zz",
+      "repo": "timelapse",
+      "releaseType": "release"
+    }
   },
   "devDependencies": {
-    "electron": "^44.7.0"
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3"
   }
 }

@@ -12,14 +12,21 @@ const QUALITY = {
 };
 
 let win = null;
-let toolDir = '';                // leer = ffmpeg/ffprobe aus PATH
+let toolDir = '';                // vom Nutzer gesetzter ffmpeg-Ordner
 const running = new Map();       // jobId -> { proc, cancelled }
 let initialFiles = [];
 
+// Mitgeliefertes ffmpeg im installierten Paket (resources/ffmpeg/bin)
+const BUNDLED_DIR = path.join(process.resourcesPath || '', 'ffmpeg', 'bin');
+const hasBundled = app.isPackaged && fs.existsSync(path.join(BUNDLED_DIR, 'ffmpeg.exe'));
+
 // ---------- Hilfsfunktionen ----------
 
+// Reihenfolge: eigener Ordner > mitgeliefert > PATH
 function tool(name) {
-  return toolDir ? path.join(toolDir, name + '.exe') : name;
+  if (toolDir) return path.join(toolDir, name + '.exe');
+  if (hasBundled) return path.join(BUNDLED_DIR, name + '.exe');
+  return name;
 }
 
 function run(cmd, args, { binary = false } = {}) {
@@ -128,7 +135,12 @@ ipcMain.handle('tools:check', async (_e, dir) => {
     '-hide_banner', '-loglevel', 'error', '-f', 'lavfi', '-i', 'color=black:s=256x256:d=0.2',
     '-c:v', 'h264_nvenc', '-f', 'null', '-',
   ]);
-  return { ok: true, version: version.replace(/-.*$/, ''), nvenc: t.code === 0 };
+  return {
+    ok: true,
+    version: version.replace(/-.*$/, '').replace(/^n(?=\d)/, ''),
+    nvenc: t.code === 0,
+    bundled: !toolDir && hasBundled,
+  };
 });
 
 ipcMain.handle('probe', async (_e, file) => {

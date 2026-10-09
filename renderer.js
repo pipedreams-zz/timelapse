@@ -211,9 +211,10 @@ function updateStatusLine() {
     return;
   }
   text.textContent = `ffmpeg ${tools.version} · ${tools.nvenc ? 'NVENC' : 'CPU'}`;
-  line.title = tools.nvenc
+  line.title = (tools.nvenc
     ? 'Hardware-Encoding über die NVIDIA-Grafikkarte ist verfügbar.'
-    : 'Kein NVENC gefunden – es wird mit der CPU (x264) kodiert.';
+    : 'Kein NVENC gefunden – es wird mit der CPU (x264) kodiert.')
+    + (tools.bundled ? '\nffmpeg wird mit der App mitgeliefert.' : '');
 }
 
 // ---------- Darstellung hell / dunkel ----------

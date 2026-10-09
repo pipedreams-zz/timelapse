@@ -1,20 +1,34 @@
 # Zeitraffer
 
-Kleine Desktop-App (Electron), die aus Screencasts per Drag & Drop Zeitraffer erzeugt. Die App steuert das lokal installierte **ffmpeg**, liest die Originale direkt und legt das Ergebnis standardmäßig daneben ab:
+Kleine Desktop-App für Windows, die aus Screencasts per Drag & Drop Zeitraffer erzeugt. Die App steuert **ffmpeg**, liest die Originale direkt und legt das Ergebnis standardmäßig daneben ab:
 
 ```
 D:\OBS\aufnahme.mkv  →  D:\OBS\aufnahme_4x.mp4
 ```
 
-## Start
+## Download
 
-- Doppelklick auf **`Zeitraffer starten.cmd`**, oder im Ordner `npm start`.
-- Einmalig **`Verknuepfungen anlegen.ps1`** ausführen (Rechtsklick → „Mit PowerShell ausführen“). Das legt an:
-  - eine Desktop-Verknüpfung „Zeitraffer“
-  - einen Eintrag unter **Rechtsklick → Senden an → Zeitraffer**. Markierte Videos landen direkt in der Warteschlange, auch wenn die App schon offen ist.
+Unter **[Releases](https://github.com/pipedreams-zz/timelapse/releases/latest)** gibt es zwei Varianten, beide mit ffmpeg an Bord – es muss nichts weiter installiert werden:
 
-Voraussetzungen: Node.js und ffmpeg/ffprobe im PATH (oder Ordner unter „Erweitert“ eintragen).
-Nach einem frischen Checkout: `npm run setup` (installiert Electron samt Programmdatei).
+- **`Zeitraffer-Setup-x.y.z.exe`** – Installer ohne Adminrechte. Legt Startmenü- und Desktop-Verknüpfung an sowie **Rechtsklick → Senden an → Zeitraffer**. Deinstallation über die Windows-Einstellungen.
+- **`Zeitraffer-x.y.z-portable.exe`** – eine einzelne Datei, startet ohne Installation.
+
+Die Dateien sind nicht signiert. Windows SmartScreen zeigt deshalb beim ersten Start „Der Computer wurde durch Windows geschützt“ – über **Weitere Informationen → Trotzdem ausführen** geht es weiter.
+
+## Aus dem Quellcode starten
+
+- `npm run setup` (installiert Electron samt Programmdatei), dann `npm start` oder Doppelklick auf **`Zeitraffer starten.cmd`**.
+- Optional **`Verknuepfungen anlegen.ps1`** ausführen (Rechtsklick → „Mit PowerShell ausführen“) für Desktop-Verknüpfung und „Senden an“.
+- ffmpeg/ffprobe werden dabei aus dem PATH genommen (oder Ordner unter „Erweitert“ eintragen).
+
+## Neue Version veröffentlichen
+
+```
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+Der Workflow `.github/workflows/release.yml` übernimmt die Version aus dem Tag, lädt ffmpeg (`scripts/fetch-ffmpeg.ps1`), baut Installer und portable EXE und hängt beide an das Release. Lokal bauen: `npm run ffmpeg`, dann `npm run dist` (Ausgabe in `dist/`).
 
 ## Optionen
 
@@ -60,3 +74,5 @@ Hinweis: `node_modules` ist rund 250 MB groß. Liegt der App-Ordner in einem syn
 ## Lizenz
 
 Code unter der [MIT-Lizenz](LICENSE). Die Schrift Space Grotesk unter `assets/fonts/` steht unter der SIL Open Font License ([OFL.txt](assets/fonts/OFL.txt)).
+
+Die Release-Pakete enthalten einen unveränderten ffmpeg-Build von [BtbN/FFmpeg-Builds](https://github.com/BtbN/FFmpeg-Builds) unter der GPL v3. Lizenztext und Quellenangaben liegen im installierten Programm unter `resources/ffmpeg/`. Zeitraffer ruft ffmpeg als eigenständiges Programm auf.

@@ -1,5 +1,7 @@
 node_modules/
 *.part.mp4
+dist/
+vendor/
 
 # Supreme (Fontshare) wird nicht mitverteilt – siehe README
 assets/fonts/Supreme-*.woff2

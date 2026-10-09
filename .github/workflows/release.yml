@@ -1,0 +1,39 @@
+# Baut Installer und portable EXE für Windows und hängt sie an ein
+# GitHub-Release. Auslöser: ein Tag wie v1.0.0 (Version kommt aus dem Tag).
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Version aus dem Tag übernehmen
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: npm pkg set version="${GITHUB_REF_NAME#v}"
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: ffmpeg laden
+        shell: pwsh
+        run: ./scripts/fetch-ffmpeg.ps1
+
+      - name: Bauen und veröffentlichen
+        run: npx electron-builder --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
